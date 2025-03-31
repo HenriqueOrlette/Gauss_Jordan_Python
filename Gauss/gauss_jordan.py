@@ -1,3 +1,16 @@
+#a
+matrix = [[2.0, 3.0, 5.0], [4.0, -1.0, 7.0]]
+#b
+#matrix = [[2.0, 3.0, 1.0, 0.0], [1.0, -2.0, -1.0, 1.0], [1.0, 4.0, 1.0, 2.0]]
+#c
+#matrix = [[2.0, 2.0, -3.0, 4.0], [1.0, 3.0, 1.0, 11.0], [2.0, 5.0, -4.0, 13.0]]
+#d
+#matrix = [[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, 1.0, 2.0], [2.0, 2.0, 2.0, 5.0]]
+#e
+#matrix = [[1.0, 1.0, 1.0, 1.0], [1.0, -1.0, 1.0, 2.0], [2.0, 0.0, 2.0, 3.0]]
+#f
+#matrix = [[2.0, 1.0, -2.0, 10.0], [3.0, 2.0, 2.0, 1.0], [5.0, 4.0, 3.0, 4.0]]
+
 def print_matriz(M, decimals = 3):
     for row in M:
         print([round(x, decimals)+0 for x in row])
@@ -15,9 +28,9 @@ def coef_matrix(augMat):
     # Recuperando as dimensoes da matriz coeficiente
     rows = len(augMat)
     cols = len(augMat[0])
-    # Section 2: Create a new matrix of zeros
+    # Section 2: Cria uma nova matriz de zeros
     MC = zeros_matriz(rows, cols - 1)
-    # Section 3: Copy values of M into the copy
+    # Section 3: Copia os valores de M para dentro da cópia
     for i in range(rows):
         for j in range(cols - 1):
             MC[i][j] = augMat[i][j]
@@ -27,19 +40,18 @@ def determinant(AM):
 
     n = len(AM)
     # Reducao a forma triangular superior
-    for fd in range(n): # fd: foco diagonal values
+    for fd in range(n):
         if AM[fd][fd] == 0:
             for j in range(fd + 1, n):
                 if AM[j][fd] != 0:
                     AM[fd], AM[j] = AM[j], AM[fd]
                 break
-        else:
-    # If no non-zero pivot is found, the matrix might be singular
-    # Se um pivo nao for encontrado, a matriz eh singular
-                raise ValueError("Matriz singular!.")
-        for i in range(fd+1, n): # skip row with fd in it.
-            crScaler = AM[i][fd] / AM[fd][fd] # cr stands for "current row".
-            for j in range(n): # cr - crScaler * fdRow, one element at a time.
+            else:
+    # Se um pivo nao for encontrado, a matriz é singular
+                return 0
+        for i in range(fd+1, n):
+            crScaler = AM[i][fd] / AM[fd][fd] 
+            for j in range(n):
                 AM[i][j] = AM[i][j] - crScaler * AM[fd][j]
     # Uma vez que temos a forma triangular, calculamos o produto da diagonal principal
     product = 1.0
@@ -55,10 +67,9 @@ def verifica_non_singularidade(A):
         raise ArithmeticError("Matriz Singular!")
 
 def GaussJordanMethod(augMat):
-    n = len(augMat) # Numero de linhas
-    m = len(augMat[0]) # Numero de colunas
+    n = len(augMat)
+    m = len(augMat[0]) 
     for i in range(n):
-    # Check if the pivot element is zero and swap rows if necessary
     # Verifica se o pivo eh zero e muda a linha se necessario
         if augMat[i][i] == 0:
             for j in range(i + 1, n):
@@ -66,7 +77,6 @@ def GaussJordanMethod(augMat):
                     augMat[i], augMat[j] = augMat[j], augMat[i]
                 break
             else:
-        # If no non-zero pivot is found, the matrix might be singular
         # Se um pivo nao for encontrado, a matriz eh singular
                 raise ValueError("Matriz singular!.")
         # Normalizando cada linha
@@ -86,14 +96,25 @@ def GaussJordanMethod(augMat):
                     augMat[j][k] -= coef * augMat[i][k]
             else:
                 pass
-        print(augMat)
+        print_matriz(augMat)
+        print(" ")
 
-matrix = [[3.0, 2.0, -4.0, 3.0], [2.0, 3.0, 3.0, 15.0], [5.0, -3, 1.0, 14.0]]
-#matrix = [[0, 2, 0, 1, 0], [2, 2, 3, 2, -2], [4, -3, 0, 1, -7], [6, 1, -6, -5, 6]]
-mc = coef_matrix(matrix)
-print_matriz(mc)
-det = determinant(mc)
-print(det)
-result = verifica_non_singularidade(mc)
-print(result)
-GaussJordanMethod(matrix)
+def GaussJordan(augMat):
+    print("\nCoeficiente:")
+    mc = coef_matrix(matrix)
+    print_matriz(mc)
+    
+    try:
+        print("\nDeterminante:")
+        det = determinant(mc)
+        print(det)
+        result = verifica_non_singularidade(mc)
+        print("\nÉ não singular?")
+        print(result)
+        print("\nResolução Gauss_Jordan:")
+        GaussJordanMethod(matrix)
+        print_matriz(matrix)
+    except (ArithmeticError, ValueError) as erro:
+        print(f"Erro: {erro}") 
+
+GaussJordan(matrix)
